@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Principito - Aventura Completa</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Nunito', sans-serif; background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%); color: white; height: 100vh; overflow: hidden; cursor: pointer; }
+        .comic-font { font-family: 'Comic Neue', cursive; }
+        
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes bounce { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .animate-float { animation: float 4s ease-in-out infinite; }
+        .animate-bounce { animation: bounce 0.5s ease-in-out; }
+        .animate-slide-in { animation: slideIn 0.6s ease-out; }
+        
+        .btn-kid {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e40af;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            border: 4px solid white;
+            cursor: pointer;
+            font-size: 20px;
+            font-family: 'Comic Neue', cursive;
+            box-shadow: 0 6px 0 #d97706;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-kid:hover { transform: translateY(-3px); box-shadow: 0 9px 0 #d97706; }
+        .btn-kid:active { transform: translateY(2px); box-shadow: 0 3px 0 #d97706; }
+        
+        .btn-option {
+            background: white;
+            color: #1e40af;
+            border: 3px solid #60a5fa;
+            border-radius: 20px;
+            padding: 16px;
+            font-size: 19px;
+            text-align: left;
+            transition: all 0.3s;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 10px 0;
+            box-shadow: 0 4px 0 #93c5fd;
+        }
+        
+        .btn-option:hover { background: #dbeafe; transform: translateX(8px); }
+        .btn-option.correct { background: #bbf7d0; border-color: #22c55e; color: #166534; }
+        .btn-option.wrong { background: #fecaca; border-color: #ef4444; color: #991b1b; }
+        
+        .character-img {
+            width: 230px;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 20px;
+            border: 5px solid white;
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
+            transition: transform 0.3s;
+        }
+        
+        .character-img:hover { transform: scale(1.05); }
+        
+        .speech-bubble {
+            background: white;
+            border-radius: 30px;
+            padding: 22px 32px;
+            position: relative;
+            border: 5px solid #fbbf24;
+            color: #1e40af;
+            font-size: 23px;
+            line-height: 1.6;
+            max-width: 650px;
+            margin: 0 auto;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.1);
+        }
+        
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 60px;
+            border-width: 18px 18px 0;
+            border-style: solid;
+            border-color: white transparent transparent;
+        }
+        
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            bottom: -22px;
+            left: 58px;
+            border-width: 20px 20px 0;
+            border-style: solid;
+            border-color: #fbbf24 transparent transparent;
+        }
+        
+        .click-message {
+            position: fixed;
+            bottom: 25px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: rgba(0,0,0,0.8);
+            padding: 12px;
+            border-radius: 12px;
+            margin: 0 25px;
+            animation: pulse 2s infinite;
+            z-index: 1000;
+            border: 2px solid #fbbf24;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        
+        .inmentando-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-family: 'Comic Neue', cursive;
+            font-size: 16px;
+            display: inline-block;
+            border: 3px solid white;
+            font-weight: bold;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 10px;
+            border: 3px solid transparent;
+            background-clip: padding-box;
+        }
+        
+        .star-rating {
+            font-size: 36px;
+            letter-spacing: 5px;
+        }
+        
+        .diploma-border {
+            border: 15px solid transparent;
+            border-image: linear-gradient(45deg, #fbbf24, #f59e0b, #fbbf24) 1;
+            border-radius: 20px;
+        }
+        .hidden { display: none; }
+        
+        .name-input {
+            padding: 12px 20px;
+            font-size: 24px;
+            border: 3px solid #fbbf24;
+            border-radius: 15px;
+            text-align: center;
+            font-family: 'Comic Neue', cursive;
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            display: block;
+            background: #fff9db;
+        }
+        
+        .name-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+        }
+        
+        .inmentando-trademark {
+            font-family: 'Comic Neue', cursive;
+            font-weight: bold;
+            color: #7c3aed;
+            text-shadow: 1px 1px 0 white;
+        }
+        
+        .diploma-only {
+            display: none;
+        }
+        
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .diploma-only {
+                display: block !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .diploma-border {
+                border: none !important;
+                box-shadow: none !important;
+            }
+        }
+    </style>
+</head>
+<body onclick="activateAudio()">
+    <div id="clickMessage" class="click-message">
+        <p class="text-xl text-yellow-300 font-bold">
+            <i class="fas fa-hand-point-up mr-3 animate-bounce"></i>
+            ¡Haz clic en cualquier parte para activar el sonido!
+        </p>
+    </div>
+
+    <div id="startScreen" class="fixed inset-0 flex flex-col items-center justify-center z-50 bg-gradient-to-b from-blue-500 via-purple-500 to-pink-500 p-8">
+        <div class="text-center mb-12">
+            <div class="text-9xl mb-10 animate-float">👑</div>
+            <h1 class="text-7xl md:text-8xl font-bold mb-8 comic-font text-yellow-300" style="text-shadow: 4px 4px 0 #1e40af;">
+                El Principito
+            </h1>
+            <div class="text-3xl text-blue-100 mb-4">¡Una aventura mágica en el espacio!</div>
+            <div class="text-2xl text-blue-200">10 capítulos increíbles</div>
+        </div>
+        
+        <div class="bg-white/25 rounded-3xl p-10 mb-12 max-w-2xl border-4 border-white/30 backdrop-blur-sm">
+            <h3 class="text-4xl font-bold text-white comic-font text-center">¡Hola Explorador Espacial!</h3>
+            <p class="text-2xl text-blue-100 text-center leading-relaxed">
+                Acompaña al Principito en un viaje por 10 planetas especiales.<br>
+                <span class="text-yellow-300 font-bold">¡Escucha cada historia y responde las preguntas!</span>
+            </p>
+            <div class="grid grid-cols-3 gap-6 mt-8">
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🎨</div>
+                    <p class="text-white font-bold">Imágenes</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🔊</div>
+                    <p class="text-white font-bold">Voces</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl mb-3">🏆</div>
+                    <p class="text-white font-bold">Premios</p>
+                </div>
+            </div>
+        </div>
+        
+        <button id="startButton" class="btn-kid text-3xl px-16 py-7 mb-10">
+            <i class="fas fa-rocket text-2xl mr-4"></i>
+            ¡COMENZAR AVENTURA!
+        </button>
+        
+        <div class="flex gap-6">
+            <button id="soundToggle" class="btn-kid text-xl bg-green-600">
+                <i class="fas fa-volume-up mr-2"></i>
+                SONIDO ON
+            </button>
+            <button id="helpBtn" class="btn-kid text-xl bg-purple-600">
+                <i class="fas fa-question-circle mr-2"></i>
+                AYUDA
+            </button>
+        </div>
+        
+        <div class="mt-10 text-center text-blue-200 text-lg">
+            <p><i class="fas fa-lightbulb mr-2"></i>Para niños de 6 a 9 años</p>
+        </div>
+    </div>
+
+    <div id="gameScreen" class="hidden h-screen grid grid-cols-1 lg:grid-cols-3">
+        <div class="lg:col-span-2 p-8 bg-gradient-to-b from-blue-400 via-blue-500 to-blue-600 flex flex-col">
+            <div class="flex justify-between items-center mb-8">
+                <div class="flex items-center gap-6">
+                    <div class="text-5xl animate-float">👑</div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-white comic-font">El Principito</h2>
+                        <div class="flex items-center gap-3 mt-1">
+                            <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                            <p class="text-blue-100 text-lg">Aventura Espacial Activa</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center gap-6">
+                    <div class="bg-white/25 rounded-full px-8 py-4 border-2 border-white/40">
+                        <span class="text-white text-xl font-bold">Capítulo</span>
+                        <span id="currentChapter" class="text-yellow-300 text-4xl font-bold ml-3">1</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex-grow flex flex-col lg:flex-row items-center justify-center gap-12 p-6">
+                <div id="characterArea" class="text-center lg:text-left">
+                    <img id="characterImage" alt="Personaje" class="character-img mx-auto lg:mx-0 mb-6 animate-float">
+                    <div class="bg-white/25 rounded-2xl p-4 inline-block border-2 border-white/30">
+                        <p id="characterName" class="text-2xl font-bold text-white comic-font mb-1"></p>
+                        <p id="characterDesc" class="text-blue-100"></p>
+                    </div>
+                </div>
+                
+                <div class="flex-1 max-w-2xl">
+                    <div class="speech-bubble mb-8">
+                        <p id="storyText" class="font-bold"></p>
+                    </div>
+                    
+                    <div class="flex justify-center gap-6 mt-10">
+                        <button id="playVoice" class="btn-kid text-xl bg-green-600">
+                            <i class="fas fa-play mr-3"></i>
+                            ESCUCHAR HISTORIA
+                        </button>
+                        <button id="repeatVoice" class="btn-kid text-xl bg-blue-600">
+                            <i class="fas fa-redo mr-3"></i>
+                            REPETIR
+                        </button>
+                    </div>
+                    
+                    <div id="voiceIndicator" class="hidden mt-6 text-center">
+                        <div class="inline-flex items-center gap-4 bg-white/25 p-4 rounded-full border-2 border-white/30">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.2s"></div>
+                                <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse" style="animation-delay: 0.4s"></div>
+                            </div>
+                            <span class="text-white text-lg font-bold">La historia está sonando...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8">
+                <div class="flex overflow-x-auto pb-6 gap-4 px-4" id="chaptersContainer"></div>
+            </div>
+        </div>
+        
+        <div class="lg:col-span-1 bg-gradient-to-b from-purple-500 via-purple-600 to-purple-700 p-8 overflow-y-auto">
+            <div class="mb-8 text-center">
+                <h3 id="chapterTitle" class="text-3xl font-bold text-white comic-font mb-3"></h3>
+                <div class="w-40 h-2 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto rounded-full mb-6"></div>
+            </div>
+            
+            <div class="bg-white/95 rounded-3xl p-8 mb-8 border-4 border-purple-300 shadow-2xl">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="text-3xl">🤔</div>
+                    <h4 class="text-2xl font-bold text-purple-800 comic-font">¡PREGUNTA DEL DÍA!</h4>
+                </div>
+                
+                <p id="questionText" class="text-2xl font-bold text-purple-900 mb-8 leading-tight"></p>
+                
+                <div id="optionsContainer" class="space-y-4"></div>
+                
+                <div id="feedbackArea" class="hidden mt-8 p-6 rounded-2xl text-center border-4 border-green-300 bg-gradient-to-r from-green-100 to-emerald-100 animate-slide-in">
+                    <div id="feedbackEmoji" class="text-5xl mb-4"></div>
+                    <p id="feedbackText" class="text-xl font-bold text-gray-800"></p>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 rounded-3xl p-8 text-center border-6 border-white shadow-2xl">
+                <h4 class="text-3xl font-bold text-white comic-font mb-6">¡TUS RECOMPENSAS!</h4>
+                
+                <div class="flex justify-center gap-3 mb-8">
+                    <div id="star1" class="text-5xl">⭐</div>
+                    <div id="star2" class="text-5xl">⭐</div>
+                    <div id="star3" class="text-5xl">⭐</div>
+                    <div id="star4" class="text-5xl">⭐</div>
+                    <div id="star5" class="text-5xl">⭐</div>
+                </div>
+                
+                <div class="text-4xl font-bold text-purple-900 mb-4">
+                    <span id="score" class="text-6xl">0</span> PUNTOS
+                </div>
+                
+                <p class="text-purple-800 text-lg font-bold">¡Cada respuesta correcta te acerca a la sabiduría!</p>
+            </div>
+            
+            <div class="mt-8 text-center">
+                <p class="text-white/90 text-lg italic">"Lo esencial es invisible a los ojos"</p>
+                <p class="text-white/70 text-sm mt-1">- El Principito</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="helpModal" class="hidden fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-6">
+        <div class="bg-gradient-to-b from-blue-500 to-purple-600 rounded-3xl p-10 max-w-2xl w-full border-6 border-yellow-400">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-6">🎮</div>
+                <h3 class="text-4xl font-bold text-white comic-font mb-4">Cómo Jugar</h3>
+            </div>
+            
+            <div class="space-y-6 mb-10">
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl">1️⃣</div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-white mb-2">ESCUCHA</h4>
+                        <p class="text-blue-100 text-lg">Pulsa "ESCUCHAR HISTORIA" para oír la aventura del capítulo</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl">2️⃣</div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-white mb-2">RESPONDE</h4>
+                        <p class="text-blue-100 text-lg">Elige la respuesta correcta entre las 3 opciones</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl">3️⃣</div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-white mb-2">GANA</h4>
+                        <p class="text-blue-100 text-lg">Cada acierto te da 10 puntos y una estrella</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start gap-4">
+                    <div class="text-3xl">4️⃣</div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-white mb-2">COMPLETA</h4>
+                        <p class="text-blue-100 text-lg">Termina los 10 capítulos para ganar tu diploma</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="closeHelp" class="btn-kid text-2xl px-12 py-5">
+                    <i class="fas fa-check mr-3"></i>
+                    ¡ENTENDIDO!
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <audio id="correctSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="wrongSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="pageSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-unlock-game-notification-253.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const chapters = [
+            {
+                id: 1,
+                title: "El Dibujo de la Boa",
+                character: "La Boa que digiere al elefante",
+                characterDesc: "Un dibujo misterioso que es más de lo que parece",
+                characterImage: "https://i.imgur.com/mWcQ8Oy.jpeg",
+                story: "Cuando tenía 6 años, dibujé una serpiente que se comió un elefante. Pero los grandes solo veían un sombrero. ¿Tú puedes ver al elefante dentro?",
+                voiceText: "Cuando tenía seis años, dibujé una serpiente boa que se comió un elefante entero. Pero los adultos solo veían un sombrero aburrido. ¿Tú puedes ver con tu imaginación al elefante dentro de la serpiente?",
+                question: "¿Por qué los grandes decían que el dibujo era un sombrero?",
+                options: [
+                    "Porque no usaban su imaginación para ver adentro.",
+                    "Porque el dibujo era de un color aburrido.",
+                    "Porque los sombreros son divertidos."
+                ],
+                correct: 0,
+                feedback: "¡Excelente! Los grandes habían olvidado cómo usar su imaginación como los niños.",
+                feedbackEmoji: "🎨",
+                color: "#3B82F6"
+            },
+            {
+                id: 2,
+                title: "El Pedido de la Oveja",
+                character: "El Principito en su asteroide",
+                characterDesc: "Un niño curioso que nunca se rinde",
+                characterImage: "https://i.imgur.com/AsZ5lxV.jpeg",
+                story: "¡Hola! Soy el Principito. Vivo en un planeta pequeño y necesito una oveja. La pedí muchas veces hasta que me dibujaron una en una caja.",
+                voiceText: "¡Hola! Soy el Principito. Vivo en un planeta pequeño y necesito una oveja. La pedí muchas veces al piloto, hasta que por fin me dibujó una oveja dentro de una caja. Cuando algo es importante, no hay que rendirse.",
+                question: "El Principito pidió una oveja muchas veces. ¿Qué nos enseña esto?",
+                options: [
+                    "Que cuando algo nos importa, no hay que rendirse.",
+                    "Que al Principito le gustaba molestar al piloto.",
+                    "Que las ovejas son difíciles de dibujar."
+                ],
+                correct: 0,
+                feedback: "¡Muy bien! Cuando algo es importante para nosotros, debemos ser persistentes.",
+                feedbackEmoji: "🐑",
+                color: "#10B981"
+            },
+            {
+                id: 3,
+                title: "La Caja del Cordero",
+                character: "La caja del cordero",
+                characterDesc: "Donde vive la oveja imaginaria",
+                characterImage: "https://i.imgur.com/SeTJoaa.jpeg",
+                story: "Me dibujaron una caja con agujeros. ¡Adentro está la oveja perfecta! La imaginación es mágica.",
+                voiceText: "El piloto me dibujó una caja con tres agujeros. Me dijo: '¡Adentro está la oveja perfecta que tú imaginas!' La imaginación es mágica, podemos ver cosas que otros no ven.",
+                question: "¿Qué había dentro de la caja que dibujó el piloto?",
+                options: [
+                    "La oveja que el Principito imaginaba.",
+                    "Un juguete de plástico.",
+                    "Nada, estaba vacía."
+                ],
+                correct: 0,
+                feedback: "¡Sí! Con imaginación podemos ver cosas maravillosas donde otros no ven nada.",
+                feedbackEmoji: "📦",
+                color: "#8B5CF6"
+            },
+            {
+                id: 4,
+                title: "El Astrónomo Turco",
+                character: "El astrónomo turco",
+                characterDesc: "Un sabio que nadie escuchó al principio",
+                characterImage: "https://i.imgur.com/ReoYknX.jpeg",
+                story: "Un señor con telescopio descubrió mi planeta, pero nadie le creyó por su ropa. Después se puso traje y todos le creyeron.",
+                voiceText: "Había un astrónomo turco que descubrió mi planeta con su telescopio. Pero nadie le creyó porque usaba ropa diferente. Años después se puso traje europeo, dijo lo mismo, ¡y todos le creyeron! Qué tonto, ¿verdad? Lo importante es lo que sabemos, no cómo nos vestimos.",
+                question: "Al principio, nadie le creyó al astrónomo por su ropa. ¿Está bien juzgar a alguien por cómo se viste?",
+                options: [
+                    "No, lo que importa es lo que sabe y lo que dice.",
+                    "Sí, hay que vestirse siempre de traje.",
+                    "Solo hay que creerle a los que usan anteojos."
+                ],
+                correct: 0,
+                feedback: "¡Correcto! Lo importante es lo que la persona sabe y dice, no cómo se viste.",
+                feedbackEmoji: "👔",
+                color: "#EC4899"
+            },
+            {
+                id: 5,
+                title: "Los Baobabs",
+                character: "Los Baobabs",
+                characterDesc: "Árboles gigantes que pueden romper planetas",
+                characterImage: "https://i.imgur.com/8dZC02i.jpeg",
+                story: "¡Cuidado con los baobabs! Empiezan pequeños, pero si no los saco cada mañana, crecen tanto que rompen mi planeta.",
+                voiceText: "¡Mucho cuidado con los baobabs! Empiezan siendo arbolitos pequeñitos, pero si no los saco cada mañana, crecen tanto que pueden romper mi planetita. Los problemas pequeños hay que solucionarlos pronto.",
+                question: "Los Baobabs empiezan siendo chiquitos. ¿Qué pasa si no los sacamos a tiempo?",
+                options: [
+                    "Se hacen gigantes y pueden romper nuestro hogar.",
+                    "Se convierten en flores hermosas.",
+                    "No pasa nada, son solo árboles."
+                ],
+                correct: 0,
+                feedback: "¡Muy bien! Los problemas pequeños hay que solucionarlos pronto, antes de que crezcan demasiado.",
+                feedbackEmoji: "🌳",
+                color: "#059669"
+            },
+            {
+                id: 6,
+                title: "La Puesta de Sol",
+                character: "El Principito mirando la puesta de sol",
+                characterDesc: "Un momento de paz cuando está triste",
+                characterImage: "https://i.imgur.com/OHaJadm.jpeg",
+                story: "Cuando estoy triste, veo puestas de sol. En mi planeta pequeño, muevo mi silla y ¡zas! Otra puesta de sol.",
+                voiceText: "Cuando me siento triste, me encanta ver puestas de sol. Como mi planeta es tan pequeño, solo muevo mi silla un poquito y ya tengo otra puesta de sol. Las cosas bellas nos ayudan a sentirnos mejor cuando estamos tristes.",
+                question: "El Principito miraba puestas de sol cuando estaba triste. ¿Qué hacés vos para sentirte mejor?",
+                options: [
+                    "Busco algo bello que me dé paz.",
+                    "Me enojo con todo el mundo.",
+                    "Me quedo a oscuras siempre."
+                ],
+                correct: 0,
+                feedback: "¡Excelente elección! Buscar cosas bellas nos ayuda a sentir paz y felicidad.",
+                feedbackEmoji: "🌅",
+                color: "#F59E0B"
+            },
+            {
+                id: 7,
+                title: "Las Espinas de las Flores",
+                character: "La Rosa con espinas",
+                characterDesc: "Una flor frágil que se protege con espinas",
+                characterImage: "https://i.imgur.com/QCPOLal.jpeg",
+                story: "Las flores son frágiles pero tienen espinas para defenderse. Todos necesitamos protección, ¿verdad?",
+                voiceText: "Las flores son seres muy frágiles pero tienen espinas. ¿Sabes por qué? ¡Para defenderse! Aunque sean pequeñitas y delicadas, sus espinitas les ayudan a protegernos. Todos los seres, grandes o pequeños, necesitamos formas de protegernos.",
+                question: "¿Para qué creés que las flores tienen espinas si son tan frágiles?",
+                options: [
+                    "Para intentar defenderse, aunque sean pequeñitas.",
+                    "Para pinchar a los niños malos.",
+                    "Porque les gusta pelear."
+                ],
+                correct: 0,
+                feedback: "¡Muy bien! Las espinas son la forma en que las flores se protegen, aunque sean pequeñas.",
+                feedbackEmoji: "🌹",
+                color: "#DC2626"
+            },
+            {
+                id: 8,
+                title: "La Rosa",
+                character: "La Rosa",
+                characterDesc: "Una flor hermosa que quiere ser cuidada",
+                characterImage: "https://i.imgur.com/a6Qj0So.jpeg",
+                story: "Soy una rosa especial. A veces soy difícil, pero solo quiero que me cuiden y me quieran.",
+                voiceText: "Soy una rosa muy especial y única. A veces puedo ser un poquito difícil, pido agua a cada rato, me quejo del viento y del frío... Pero en el fondo de mi corazón, solo quiero que me cuiden y me quieran. El Principito aprendió a quererme así, con todas mis cosas raras.",
+                question: "La Rosa era un poco difícil de tratar. ¿Qué descubrió el Principito?",
+                options: [
+                    "Que detrás de sus quejas, ella lo quería mucho.",
+                    "Que era mejor dejarla sola para siempre.",
+                    "Que las flores no necesitan agua."
+                ],
+                correct: 0,
+                feedback: "¡Exacto! A veces las personas que queremos actúan de forma extraña, pero en el fondo nos quieren.",
+                feedbackEmoji: "💖",
+                color: "#F43F5E"
+            },
+            {
+                id: 9,
+                title: "La Migración de Pájaros",
+                character: "La migración de pájaros",
+                characterDesc: "Pájaros que ayudan a viajar por el espacio",
+                characterImage: "https://i.imgur.com/Z4RngOW.jpeg",
+                story: "Me voy de viaje con los pájaros migratorios. Aprenderé cosas nuevas en otros planetas.",
+                voiceText: "Me voy de viaje con los pájaros migratorios. Voy a aprender cosas nuevas en otros planetas. Conoceré personas diferentes y lugares extraños. Aunque extrañaré mucho a mi rosa, sé que cuando vuelva, seré más sabio y la entenderé mejor.",
+                question: "El Principito se fue de viaje para aprender. ¿Es bueno conocer otros lugares?",
+                options: [
+                    "Sí, porque nos ayuda a entender mejor el mundo.",
+                    "No, es mejor quedarse siempre en el mismo lugar.",
+                    "Solo si el viaje es en un avión muy grande."
+                ],
+                correct: 0,
+                feedback: "¡Perfecto! Viajar y conocer cosas nuevas nos hace más sabios y comprensivos.",
+                feedbackEmoji: "🐦",
+                color: "#6366F1"
+            },
+            {
+                id: 10,
+                title: "El Rey",
+                character: "El Rey",
+                characterDesc: "Un rey que solo pide cosas posibles",
+                characterImage: "https://i.imgur.com/xVsRhTP.jpeg",
+                story: "¡Soy rey! Pero solo tengo un ratón. Un buen rey pide cosas que sus súbditos PUEDAN hacer.",
+                voiceText: "¡Soy el rey de este asteroide! Pero solo tengo un ratón como súbdito. Un buen rey solo pide cosas que sus súbditos puedan hacer. Si le pido al ratón que vuele como un pájaro, sería mi culpa, no la suya. Así debe ser la autoridad, con bondad y sentido común.",
+                question: "El Rey decía que solo hay que pedir cosas que los demás puedan hacer. ¿Eso es ser un buen jefe?",
+                options: [
+                    "Sí, hay que mandar con bondad y sentido común.",
+                    "No, un rey debe obligar a todos a hacer lo imposible.",
+                    "Un rey solo debe dormir y comer."
+                ],
+                correct: 0,
+                feedback: "¡Excelente! Un buen líder pide cosas razonables y trata a todos con respeto.",
+                feedbackEmoji: "👑",
+                color: "#A855F7"
+            }
+        ];
+
+        let currentChapterIndex = 0;
+        let score = 0;
+        let soundEnabled = true;
+        let userHasInteracted = false;
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+        let studentName = "Explorador Espacial";
+
+        const startScreen = document.getElementById('startScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const helpModal = document.getElementById('helpModal');
+        const startButton = document.getElementById('startButton');
+        const soundToggle = document.getElementById('soundToggle');
+        const helpBtn = document.getElementById('helpBtn');
+        const closeHelp = document.getElementById('closeHelp');
+        const playVoice = document.getElementById('playVoice');
+        const repeatVoice = document.getElementById('repeatVoice');
+        const clickMessage = document.getElementById('clickMessage');
+        const characterImage = document.getElementById('characterImage');
+        const characterName = document.getElementById('characterName');
+        const characterDesc = document.getElementById('characterDesc');
+        const storyText = document.getElementById('storyText');
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const feedbackText = document.getElementById('feedbackText');
+        const feedbackEmoji = document.getElementById('feedbackEmoji');
+        const scoreElement = document.getElementById('score');
+        const currentChapterElement = document.getElementById('currentChapter');
+        const chapterTitle = document.getElementById('chapterTitle');
+        const chaptersContainer = document.getElementById('chaptersContainer');
+        const voiceIndicator = document.getElementById('voiceIndicator');
+        const correctSound = document.getElementById('correctSound');
+        const wrongSound = document.getElementById('wrongSound');
+        const pageSound = document.getElementById('pageSound');
+        const stars = [
+            document.getElementById('star1'),
+            document.getElementById('star2'),
+            document.getElementById('star3'),
+            document.getElementById('star4'),
+            document.getElementById('star5')
+        ];
+
+        function init() {
+            startButton.addEventListener('click', startGame);
+            soundToggle.addEventListener('click', toggleSound);
+            helpBtn.addEventListener('click', showHelp);
+            closeHelp.addEventListener('click', hideHelp);
+            playVoice.addEventListener('click', playStory);
+            repeatVoice.addEventListener('click', playStory);
+            
+            createChapterButtons();
+            loadChapter(currentChapterIndex);
+            
+            setTimeout(() => {
+                clickMessage.classList.remove('hidden');
+            }, 2000);
+        }
+
+        function createChapterButtons() {
+            chaptersContainer.innerHTML = '';
+            chapters.forEach((chapter, index) => {
+                const button = document.createElement('button');
+                button.className = `btn-kid text-lg px-6 py-3 ${index === currentChapterIndex ? 'bg-purple-600' : 'bg-blue-600'}`;
+                button.innerHTML = `<i class="fas fa-star mr-2"></i>Capítulo ${chapter.id}`;
+                button.addEventListener('click', () => {
+                    if (currentChapterIndex !== index) {
+                        changeChapter(index);
+                    }
+                });
+                chaptersContainer.appendChild(button);
+            });
+        }
+
+        function loadChapter(index) {
+            const chapter = chapters[index];
+            characterImage.src = chapter.characterImage;
+            characterImage.alt = chapter.character;
+            characterName.textContent = chapter.character;
+            characterDesc.textContent = chapter.characterDesc;
+            storyText.textContent = chapter.story;
+            questionText.textContent = chapter.question;
+            chapterTitle.textContent = chapter.title;
+            currentChapterElement.textContent = chapter.id;
+            
+            document.querySelector('.lg\\:col-span-2').style.background = 
+                `linear-gradient(to bottom, ${chapter.color}80, ${chapter.color}, ${chapter.color}80)`;
+            
+            optionsContainer.innerHTML = '';
+            chapter.options.forEach((option, optionIndex) => {
+                const button = document.createElement('button');
+                button.className = 'btn-option';
+                button.innerHTML = option;
+                button.addEventListener('click', () => checkAnswer(optionIndex, chapter.correct));
+                optionsContainer.appendChild(button);
+            });
+            
+            feedbackArea.classList.add('hidden');
+            updateChapterButtons();
+            
+            if (soundEnabled && userHasInteracted) {
+                pageSound.currentTime = 0;
+                pageSound.play().catch(e => console.log("Error de audio:", e));
+            }
+        }
+
+        function updateChapterButtons() {
+            const chapterButtons = chaptersContainer.querySelectorAll('button');
+            chapterButtons.forEach((button, index) => {
+                if (index === currentChapterIndex) {
+                    button.className = 'btn-kid text-lg px-6 py-3 bg-purple-600';
+                } else {
+                    button.className = 'btn-kid text-lg px-6 py-3 bg-blue-600';
+                }
+            });
+        }
+
+        function changeChapter(index) {
+            currentChapterIndex = index;
+            loadChapter(currentChapterIndex);
+        }
+
+        function checkAnswer(selectedIndex, correctIndex) {
+            const buttons = optionsContainer.querySelectorAll('.btn-option');
+            buttons.forEach(button => {
+                button.style.pointerEvents = 'none';
+            });
+            
+            buttons.forEach((button, index) => {
+                if (index === correctIndex) {
+                    button.classList.add('correct');
+                } else if (index === selectedIndex && index !== correctIndex) {
+                    button.classList.add('wrong');
+                }
+            });
+            
+            const chapter = chapters[currentChapterIndex];
+            feedbackText.textContent = chapter.feedback;
+            feedbackEmoji.textContent = chapter.feedbackEmoji;
+            feedbackArea.classList.remove('hidden');
+            
+            if (soundEnabled && userHasInteracted) {
+                if (selectedIndex === correctIndex) {
+                    correctSound.currentTime = 0;
+                    correctSound.play().catch(e => console.log("Error de audio:", e));
+                    
+                    score += 10;
+                    scoreElement.textContent = score;
+                    
+                    const starIndex = Math.min(Math.floor(score / 20), 4);
+                    stars[starIndex].classList.add('animate-bounce');
+                    setTimeout(() => {
+                        stars[starIndex].classList.remove('animate-bounce');
+                    }, 500);
+                } else {
+                    wrongSound.currentTime = 0;
+                    wrongSound.play().catch(e => console.log("Error de audio:", e));
+                }
+            }
+            
+            setTimeout(() => {
+                if (currentChapterIndex < chapters.length - 1) {
+                    changeChapter(currentChapterIndex + 1);
+                } else {
+                    showDiploma();
+                }
+            }, 3000);
+        }
+
+        function playStory() {
+            if (!userHasInteracted) return;
+            if (currentUtterance) {
+                speechSynthesis.cancel();
+            }
+            
+            const chapter = chapters[currentChapterIndex];
+            const utterance = new SpeechSynthesisUtterance(chapter.voiceText);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.1;
+            
+            voiceIndicator.classList.remove('hidden');
+            utterance.onend = function() {
+                voiceIndicator.classList.add('hidden');
+                currentUtterance = null;
+            };
+            utterance.onerror = function() {
+                voiceIndicator.classList.add('hidden');
+                currentUtterance = null;
+            };
+            
+            speechSynthesis.speak(utterance);
+            currentUtterance = utterance;
+        }
+
+        function showDiploma() {
+            const diplomaHTML = `
+                <div id="diplomaModal" class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-6">
+                    <div class="bg-gradient-to-b from-yellow-100 to-yellow-50 rounded-3xl p-10 max-w-3xl w-full border-6 border-yellow-400">
+                        <div class="text-center mb-8">
+                            <div class="text-7xl mb-6">🏆</div>
+                            <h3 class="text-5xl font-bold text-blue-800 comic-font mb-4">¡FELICIDADES!</h3>
+                            <p class="text-3xl text-purple-700 mb-6">Has completado la aventura del Principito</p>
+                            
+                            <div class="mb-6">
+                                <label class="text-2xl text-gray-700 mb-3 block">Escribe tu nombre para el diploma:</label>
+                                <input type="text" id="studentNameInput" class="name-input" placeholder="Escribe tu nombre aquí" value="${studentName}">
+                            </div>
+                            
+                            <div id="diplomaContent" class="bg-white/90 rounded-2xl p-8 mb-8 border-4 border-yellow-300">
+                                <div class="diploma-only text-center">
+                                    <h4 class="text-4xl font-bold text-green-800 comic-font mb-4">DIPLOMA DEL EXPLORADOR ESPACIAL</h4>
+                                    <p class="text-2xl text-gray-700 mb-6">Se otorga este reconocimiento a:</p>
+                                    
+                                    <h5 class="text-5xl font-bold text-purple-700 comic-font mb-8" id="diplomaName">${studentName}</h5>
+                                    
+                                    <p class="text-xl text-gray-700 mb-6">Por haber completado exitosamente los 10 capítulos de la aventura<br>"El Principito: Viaje Estelar de los Corazones Valientes"</p>
+                                    
+                                    <div class="flex justify-center mb-8">
+                                        <div class="text-center">
+                                            <div class="text-4xl mb-2">${score}</div>
+                                            <div class="text-xl text-gray-600">PUNTOS TOTALES</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="star-rating text-yellow-500 mb-6">
+                                        ${'⭐'.repeat(Math.min(Math.floor(score / 20) + 1, 5))}
+                                    </div>
+                                    
+                                    <div class="mt-8 pt-6 border-t-2 border-yellow-300">
+                                        <p class="text-2xl text-blue-700 italic mb-2">"Lo esencial es invisible a los ojos"</p>
+                                        <p class="text-xl text-gray-600 mb-4">- El Principito</p>
+                                        <p class="text-lg text-gray-700 mt-6">Felicitaciones en nombre de <span class="inmentando-trademark">inMentando®</span></p>
+                                        <p class="text-gray-500 text-sm mt-2">Fecha: ${new Date().toLocaleDateString('es-ES')}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-wrap justify-center gap-4 no-print">
+                                <button id="updateDiploma" class="btn-kid text-xl px-8 py-4 bg-green-600">
+                                    <i class="fas fa-sync-alt mr-2"></i>
+                                    ACTUALIZAR NOMBRE
+                                </button>
+                                <button id="printDiploma" class="btn-kid text-xl px-8 py-4 bg-blue-600">
+                                    <i class="fas fa-print mr-2"></i>
+                                    IMPRIMIR DIPLOMA
+                                </button>
+                                <button id="downloadDiploma" class="btn-kid text-xl px-8 py-4 bg-purple-600">
+                                    <i class="fas fa-download mr-2"></i>
+                                    DESCARGAR PDF
+                                </button>
+                                <button id="restartBtn" class="btn-kid text-xl px-8 py-4 bg-yellow-600">
+                                    <i class="fas fa-redo mr-2"></i>
+                                    JUGAR DE NUEVO
+                                </button>
+                                <button id="closeDiploma" class="btn-kid text-xl px-8 py-4 bg-red-600">
+                                    <i class="fas fa-home mr-2"></i>
+                                    VOLVER AL INICIO
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const diplomaContainer = document.createElement('div');
+            diplomaContainer.innerHTML = diplomaHTML;
+            document.body.appendChild(diplomaContainer);
+            
+            const nameInput = diplomaContainer.querySelector('#studentNameInput');
+            const diplomaName = diplomaContainer.querySelector('#diplomaName');
+            
+            diplomaContainer.querySelector('#updateDiploma').addEventListener('click', () => {
+                studentName = nameInput.value.trim() || "Explorador Espacial";
+                diplomaName.textContent = studentName;
+                if (soundEnabled && userHasInteracted) {
+                    pageSound.currentTime = 0;
+                    pageSound.play().catch(e => console.log("Error de audio:", e));
+                }
+            });
+            
+            diplomaContainer.querySelector('#printDiploma').addEventListener('click', () => {
+                studentName = nameInput.value.trim() || "Explorador Espacial";
+                diplomaName.textContent = studentName;
+                
+                setTimeout(() => {
+                    const diplomaContent = diplomaContainer.querySelector('#diplomaContent');
+                    const originalDisplay = diplomaContent.style.display;
+                    diplomaContent.style.display = 'block';
+                    window.print();
+                    diplomaContent.style.display = originalDisplay;
+                }, 100);
+            });
+            
+            diplomaContainer.querySelector('#downloadDiploma').addEventListener('click', () => {
+                studentName = nameInput.value.trim() || "Explorador Espacial";
+                diplomaName.textContent = studentName;
+                
+                const element = diplomaContainer.querySelector('#diplomaContent');
+                const opt = {
+                    margin:       10,
+                    filename:     `Diploma-El-Principito-${studentName}.pdf`,
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                
+                html2pdf().set(opt).from(element).save();
+            });
+            
+            diplomaContainer.querySelector('#restartBtn').addEventListener('click', () => {
+                document.body.removeChild(diplomaContainer);
+                restartGame();
+            });
+            
+            diplomaContainer.querySelector('#closeDiploma').addEventListener('click', () => {
+                document.body.removeChild(diplomaContainer);
+                showStartScreen();
+            });
+            
+            nameInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    studentName = nameInput.value.trim() || "Explorador Espacial";
+                    diplomaName.textContent = studentName;
+                }
+            });
+        }
+
+        function restartGame() {
+            currentChapterIndex = 0;
+            score = 0;
+            scoreElement.textContent = '0';
+            stars.forEach(star => {
+                star.classList.remove('animate-bounce');
+            });
+            loadChapter(currentChapterIndex);
+        }
+
+        function showStartScreen() {
+            startScreen.classList.remove('hidden');
+            gameScreen.classList.add('hidden');
+        }
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            loadChapter(currentChapterIndex);
+            
+            if (soundEnabled && userHasInteracted) {
+                pageSound.currentTime = 0;
+                pageSound.play().catch(e => console.log("Error de audio:", e));
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundToggle.innerHTML = '<i class="fas fa-volume-up mr-2"></i>SONIDO ON';
+                soundToggle.classList.remove('bg-red-600');
+                soundToggle.classList.add('bg-green-600');
+            } else {
+                soundToggle.innerHTML = '<i class="fas fa-volume-mute mr-2"></i>SONIDO OFF';
+                soundToggle.classList.remove('bg-green-600');
+                soundToggle.classList.add('bg-red-600');
+                if (speechSynthesis.speaking) {
+                    speechSynthesis.cancel();
+                    voiceIndicator.classList.add('hidden');
+                }
+            }
+        }
+
+        function showHelp() {
+            helpModal.classList.remove('hidden');
+            if (soundEnabled && userHasInteracted) {
+                pageSound.currentTime = 0;
+                pageSound.play().catch(e => console.log("Error de audio:", e));
+            }
+        }
+
+        function hideHelp() {
+            helpModal.classList.add('hidden');
+        }
+
+        function activateAudio() {
+            if (!userHasInteracted) {
+                userHasInteracted = true;
+                clickMessage.classList.add('hidden');
+                pageSound.volume = 0.3;
+                pageSound.play().then(() => {
+                    pageSound.pause();
+                    pageSound.currentTime = 0;
+                    pageSound.volume = 1.0;
+                }).catch(e => console.log("Audio activado"));
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+        document.body.addEventListener('click', activateAudio);
+    </script>
+</body>
+</html>
