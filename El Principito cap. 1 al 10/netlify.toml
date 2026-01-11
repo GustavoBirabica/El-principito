@@ -1,0 +1,9 @@
+toml
+[build]
+publish = "."
+command = "echo 'Site ready'"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200
